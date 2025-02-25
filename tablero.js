@@ -137,7 +137,7 @@ crearTablero();
 //Botón para ir al inicio
 window.onload = function () {
 
-    document.getElementById("btnIniciar").addEventListener("click", function() {
-        window.location.href = "tablero.html";
+    document.getElementById("btnSalir").addEventListener("click", function() {
+        window.location.href = "index.html";
     });
 };

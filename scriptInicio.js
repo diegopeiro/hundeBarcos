@@ -2,6 +2,6 @@
 window.onload = function () {
 
     document.getElementById("btnIniciar").addEventListener("click", function() {
-        window.location.href = "index.html";
+        window.location.href = "tablero.html";
     });
 };
