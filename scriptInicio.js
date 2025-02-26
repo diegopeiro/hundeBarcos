@@ -3,5 +3,5 @@ window.onload = function () {
 
     document.getElementById("btnIniciar").addEventListener("click", function() {
         window.location.href = "tablero.html";
-    });
+    }); 
 };

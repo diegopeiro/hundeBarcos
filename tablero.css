@@ -38,3 +38,28 @@ body {
 .celda.agua {
     background-color: blue;  /* Disparo fallido */
 }
+
+
+#barcos-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.barco {
+    width: 40px;
+    height: 40px;
+    background-color: gray;
+    border: 2px solid black;
+    cursor: grab;
+    position: relative; /* IMPORTANTE para arrastrar */
+}
+
+.barco:active {
+    cursor: grabbing;
+}
+
+.barco[data-tamaño="2"] { height: 80px; }
+.barco[data-tamaño="3"] { height: 120px; }
+.barco[data-tamaño="4"] { height: 160px; }

@@ -1,143 +1,65 @@
-const tablero = document.getElementById("tablero");
-const botonEmpezar = document.getElementById("empezarJuego");
-const turnoTexto = document.getElementById("turno");
+document.addEventListener("DOMContentLoaded", () => {
+    const tablero = document.getElementById("tablero");
+    const empezarJuegoBtn = document.getElementById("empezarJuego");
+    const turnoTexto = document.getElementById("turno");
 
-const filas = 10;
-const columnas = 10;
-let turnoRojo = true; // Indica si es el turno de colocar barcos
-let barcosColocados = 0;
-let intentosJugador = 0;
-
-// Lista de barcos a colocar (tamaño de cada barco)
-const listaBarcos = [4, 3, 3, 2, 2, 2];
-let barcos = []; // Guarda las posiciones de los barcos
-let tableroOculto = [];
-
-// FUNCIÓN PARA CREAR O REINICIAR EL TABLERO
-function crearTablero() {
-    tablero.innerHTML = ""; // Limpia el tablero antes de crearlo de nuevo
-    tableroOculto = Array(filas).fill().map(() => Array(columnas).fill(0));
-    barcos = [];
-    turnoRojo = true;
-    barcosColocados = 0;
-    intentosJugador = 0;
-    turnoTexto.innerText = "Turno del Jugador Rojo: Coloca los barcos";
-
-    // HABILITAR EL BOTÓN "EMPEZAR JUEGO"
-    botonEmpezar.disabled = false;
-    botonEmpezar.innerText = "Reiniciar Juego";
-
-    for (let i = 0; i < filas; i++) {
-        for (let j = 0; j < columnas; j++) {
-            const celda = document.createElement("div");
-            celda.classList.add("celda");
-            celda.dataset.fila = i;
-            celda.dataset.columna = j;
-            celda.addEventListener("click", manejarClick);
-            tablero.appendChild(celda);
-        }
-    }
-}
-
-// FUNCIÓN PARA MANEJAR LOS CLICKS EN EL TABLERO
-function manejarClick(event) {
-    const celda = event.target;
-    const fila = parseInt(celda.dataset.fila);
-    const columna = parseInt(celda.dataset.columna);
-
-    if (turnoRojo) {
-        colocarBarco(fila, columna, celda);
-    } else {
-        realizarDisparo(fila, columna, celda);
-    }
-}
-
-// COLOCAR BARCOS (JUGADOR ROJO)
-function colocarBarco(fila, columna, celda) {
-    if (barcosColocados >= listaBarcos.length) return;
-
-    let tamañoBarco = listaBarcos[barcosColocados];
-    if (columna + tamañoBarco > columnas) return;
-
-    // Verificar si hay espacio disponible
-    for (let i = 0; i < tamañoBarco; i++) {
-        if (tableroOculto[fila][columna + i] !== 0) return;
+    // Crear tablero
+    for (let i = 0; i < 100; i++) {
+        let celda = document.createElement("div");
+        celda.classList.add("celda");
+        celda.dataset.index = i;
+        tablero.appendChild(celda);
     }
 
-    // Guardar barco en la matriz oculta
-    let barcoPosiciones = [];
-    for (let i = 0; i < tamañoBarco; i++) {
-        tableroOculto[fila][columna + i] = 1;
-        let celdaBarco = document.querySelector(`[data-fila="${fila}"][data-columna="${columna + i}"]`);
-        celdaBarco.classList.add("barco", "visible"); // Se ve cuando lo coloca
-        barcoPosiciones.push([fila, columna + i]);
-    }
-
-    barcos.push(barcoPosiciones);
-    barcosColocados++;
-
-    if (barcosColocados >= listaBarcos.length) {
-        turnoRojo = false;
-        turnoTexto.innerText = "Turno del Jugador Amarillo: Dispara!";
-        
-        // Hacer desaparecer los barcos al cambiar de turno
-        setTimeout(() => {
-            document.querySelectorAll(".barco").forEach(celda => {
-                celda.classList.remove("visible");
-                celda.classList.remove("barco");
-            });
-        }, 200);
-    }
-}
-
-// REALIZAR DISPARO (JUGADOR AMARILLO)
-function realizarDisparo(fila, columna, celda) {
-    if (celda.classList.contains("tocado") || celda.classList.contains("agua")) return;
-
-    intentosJugador++;
-    let acierto = false;
-
-    barcos.forEach((barco, index) => {
-        barco.forEach((pos, posIndex) => {
-            if (pos[0] === fila && pos[1] === columna) {
-                celda.classList.add("tocado");
-                barco.splice(posIndex, 1);
-                acierto = true;
-
-                if (barco.length === 0) {
-                    barcos.splice(index, 1);
-                    alert("¡Has hundido un barco!");
-                }
-            }
-        });
+    // Hacer los barcos arrastrables
+    interact(".barco").draggable({
+        inertia: true,
+        autoScroll: true,
+        listeners: {
+            move(event) {
+                let target = event.target;
+                let x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx;
+                let y = (parseFloat(target.getAttribute("data-y")) || 0) + event.dy;
+                target.style.transform = `translate(${x}px, ${y}px)`;
+                target.setAttribute("data-x", x);
+                target.setAttribute("data-y", y);
+            },
+        },
     });
 
-    if (!acierto) {
-        celda.classList.add("agua");
-        alert("Agua...");
-    }
+    // Hacer las celdas dropeables
+    interact(".celda").dropzone({
+        accept: ".barco",
+        overlap: 0.75,
+        ondragenter(event) {
+            event.target.classList.add("drop-target");
+        },
+        ondragleave(event) {
+            event.target.classList.remove("drop-target");
+        },
+        ondrop(event) {
+            let barco = event.relatedTarget;
+            let celda = event.target;
+            
+            // Ajustar la posición del barco dentro de la celda
+            barco.style.transform = "translate(0, 0)";
+            barco.removeAttribute("data-x");
+            barco.removeAttribute("data-y");
+            
+            // Mover el barco a la celda
+            celda.appendChild(barco);
+            celda.classList.add("barco");
+        },
+    });
 
-    if (barcos.length === 0) {
-        alert(`¡Has ganado! Intentos: ${intentosJugador}`);
-        document.cookie = `mejorResultado=${intentosJugador}; expires=Fri, 31 Dec 9999 23:59:59 GMT`;
+    // Botón para empezar el juego
+    empezarJuegoBtn.addEventListener("click", () => {
+        turnoTexto.textContent = "¡Empieza el juego! Turno del primer jugador";
+    });
 
-        // HABILITAR EL BOTÓN PARA REINICIAR
-        botonEmpezar.disabled = false;
-    }
-}
-
-// FUNCIÓN PARA REINICIAR EL JUEGO AL HACER CLIC EN "EMPEZAR JUEGO"
-botonEmpezar.addEventListener("click", () => {
-    crearTablero();
+    // Botón para salir
+    document.getElementById("btnSalir").addEventListener("click", () => {
+        alert("Saliendo del juego...");
+        window.close();
+    });
 });
-
-// INICIAR EL JUEGO AL CARGAR LA PÁGINA
-crearTablero();
-
-//Botón para ir al inicio
-window.onload = function () {
-
-    document.getElementById("btnSalir").addEventListener("click", function() {
-        window.location.href = "index.html";
-    });
-};
