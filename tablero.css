@@ -1,65 +1,94 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    text-align: center;
     font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
 }
 
 .container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
 }
 
-#tablero {
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#game-info {
+    margin-bottom: 20px;
+}
+
+#game-info ul {
+    list-style: none;
+    margin: 10px 0;
+}
+
+.board {
     display: grid;
     grid-template-columns: repeat(10, 40px);
     grid-template-rows: repeat(10, 40px);
     gap: 2px;
+    margin: 0 auto;
+    background-color: #ccc;
+    padding: 10px;
+    border-radius: 5px;
 }
 
-.celda {
+.cell {
     width: 40px;
     height: 40px;
-    background-color: lightblue;
-    border: 1px solid #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-color: #fff;
+    border: 1px solid #999;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cell:hover {
+    background-color: #e0e0e0;
+}
+
+.cell.ship {
+    background-color: #ff6b6b;
+}
+
+.cell.hit {
+    background-color: #ff4444;
+}
+
+.cell.miss {
+    background-color: #4444ff;
+}
+
+button {
+    margin: 20px 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-.celda.barco {
-    background-color: gray;  /* Barcos colocados */
+button:hover {
+    background-color: #45a049;
 }
 
-.celda.tocado {
-    background-color: red;  /* Impacto en barco */
+#message {
+    margin: 10px 0;
+    font-weight: bold;
+    color: #333;
 }
 
-.celda.agua {
-    background-color: blue;  /* Disparo fallido */
+#best-score {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #666;
 }
-
-
-#barcos-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-}
-
-.barco {
-    width: 40px;
-    height: 40px;
-    background-color: gray;
-    border: 2px solid black;
-    cursor: grab;
-    position: relative; /* IMPORTANTE para arrastrar */
-}
-
-.barco:active {
-    cursor: grabbing;
-}
-
-.barco[data-tamaño="2"] { height: 80px; }
-.barco[data-tamaño="3"] { height: 120px; }
-.barco[data-tamaño="4"] { height: 160px; }

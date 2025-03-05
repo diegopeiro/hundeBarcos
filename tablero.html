@@ -8,22 +8,24 @@
 </head>
 <body>
     <h1>Hundir la Flota</h1>
-    <h2 id="turno">Turno del Jugador Rojo: Coloca tus barcos</h2>
     <div class="container">
-        <div id="barcos-container">
-            <h3>Barcos disponibles</h3>
-            <div class="barco" id="barco1" data-tamaño="4"></div>
-            <div class="barco" id="barco2" data-tamaño="3"></div>
-            <div class="barco" id="barco3" data-tamaño="3"></div>
-            <div class="barco" id="barco4" data-tamaño="2"></div>
-            <div class="barco" id="barco5" data-tamaño="2"></div>
-            <div class="barco" id="barco6" data-tamaño="1"></div>
-            <div class="barco" id="barco7" data-tamaño="1"></div>
+        <div class="container">
+            <h1>Hundir la Flota</h1>
+            <div id="game-info">
+                <p id="turn-info">Turno: Jugador Rojo - Coloca tus barcos</p>
+                <p id="ships-info">Barcos restantes por colocar:</p>
+                <ul>
+                    <li>Barcos de 2 posiciones: <span id="ships-2">3</span></li>
+                    <li>Barcos de 3 posiciones: <span id="ships-3">2</span></li>
+                    <li>Barcos de 4 posiciones: <span id="ships-4">1</span></li>
+                </ul>
+                <p id="message"></p>
+                <p id="best-score">Mejor puntuación: <span id="best-score-value">-</span></p>
+            </div>
+            <div id="board" class="board"></div>
+            <button id="start-game" style="display: none;">Comenzar Juego</button>
+            <button id="reset-game">Reiniciar Juego</button>
         </div>
-        <div id="tablero"></div>
-    </div>
-    <button id="empezarJuego" disabled>Empezar Juego</button>
-    <button id="btnSalir" style="background-color: red;" class="button">Salir</button>
     <script src="tablero.js"></script>
 </body>
 
